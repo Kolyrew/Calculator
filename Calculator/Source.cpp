@@ -63,38 +63,60 @@ private:
     LoadPlugInSCPP loader;
 
 public:
-    double executeCalculation(const std::string& functionName, double argument) {
+    double Evaluate(const std::string& operation, double arg1, double arg2) {
+        if (operation == "+") {
+            return arg1 + arg2;
+        }
+        else if (operation == "-") {
+            return arg1 - arg2;
+        }
+        else if (operation == "*") {
+            return arg1 * arg2;
+        }
+        else if (operation == "/") {
+            if (arg2 == 0) {
+                throw std::runtime_error("Division by zero!");
+            }
+            return arg1 / arg2;
+        }
+
         auto plugins = loader.loadAllExtensionsFromDirectory("./plugins");
         for (auto plugin : plugins) {
-            if (plugin->TakeFuncName() == functionName) {
-                double result = plugin->Execute({ argument });
+            if (plugin->TakeFuncName() == operation) {
+                double result = plugin->Execute({ arg1, arg2 });
                 delete plugin;
                 return result;
             }
             delete plugin;
         }
-        throw std::runtime_error("Function not found among plugins");
+
+        throw std::runtime_error("Operation not found!");
     }
 };
 
+
 int main() {
     ConsReader evaluator;
-    std::string functionName;
-    double arg;
 
     while (true) {
-        std::cout << "Enter function name (or 'exit' to quit): ";
-        std::cin >> functionName;
+        std::cout << "Enter operation (+, -, *, /, custom function, or 'exit' to quit): ";
+        std::string operation;
+        std::cin >> operation;
 
-        if (functionName == "exit") {
+        if (operation == "exit") {
             break;
         }
 
-        std::cout << "Enter argument: ";
-        std::cin >> arg;
+        std::cout << "Enter first argument: ";
+        double arg1;
+        std::cin >> arg1;
+
+        std::cout << "Enter second argument: ";
+        double arg2;
+        std::cin >> arg2;
 
         try {
-            double result = evaluator.executeCalculation(functionName, arg);
+            double result = evaluator.Evaluate(operation, arg1, arg2);
             std::cout << "Result: " << result << std::endl;
         }
         catch (const std::exception& e) {
