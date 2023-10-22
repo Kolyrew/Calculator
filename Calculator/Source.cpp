@@ -1,24 +1,26 @@
 #include <iostream>
+#include "ConsReader.h"
 
+int main() {
+    ConsReader evaluator;
 
-class PlugInterface { //интерфейс виртуальной функции
+    while (true) {
+        std::cout << "Enter expression (or 'exit' to quit): ";
+        std::string input;
+        std::getline(std::cin, input);
 
-};
+        if (input == "exit") {
+            break;
+        }
 
-class Calculator { //считает основные и определяет нужный плагин
-	
-};
+        try {
+            double result = evaluator.Evaluate(input);
+            std::cout << "Result: " << result << std::endl;
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+    }
 
-class ConsReader { //читатет строку с консоли
-	
-};
-
-class LoadPlugInSCPP { //загрузка плагинов
-
-};
-
-int main(){
-
-
-	return 0;
+    return 0;
 }
